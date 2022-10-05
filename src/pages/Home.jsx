@@ -4,6 +4,7 @@ import iconKMB2 from "../assets/icons/kmbWhite.png";
 import GroupItem from "../components/GroupItem";
 import { toFixedIfNecessary } from "../utils/manageNumbers";
 const Home = () => {
+  const infoAgente = {};
   const tableRows = [
     "Grupo Errores",
     "Item",
@@ -564,6 +565,9 @@ const Home = () => {
           </div>
           <ul className="text-center flex flex-col justify-center items-center p-1 gap-1">
             <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              ORIGEN DE GESTION
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
               FECHA DE LLAMADA/MENSAJE
             </li>
             <li className="w-full p-[0.18rem_0.25rem] border-[1px]">AGENTE</li>
@@ -592,7 +596,37 @@ const Home = () => {
               RESPONSABLE_MONITOREO
             </li>
           </ul>
-          <div className="flex flex-col justify-center items-center p-1 gap-1 text-slate-900">
+          <ul className="text-center flex flex-col justify-center items-center p-1 gap-1">
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              FECHA DE LLAMADA/MENSAJE
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">AGENTE</li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              HORA LLAMADA/MENSAJE
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              PROVEEDOR
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              REQUERIMIENTO SOLICITADO
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              COOPERATIVA
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              NÚMERO DE CÉDULA/TELÉFONO DEL CLIENTE
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              EVALUADOR
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              FECHA_MONITOREO
+            </li>
+            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
+              RESPONSABLE_MONITOREO
+            </li>
+          </ul>
+          {/* <div className="flex flex-col justify-center items-center p-1 gap-1 text-slate-900">
             <input
               className="w-full p-[0.18rem_0.25rem] border-[1px] outline-none"
               type="text"
@@ -633,7 +667,7 @@ const Home = () => {
               className="w-full p-[0.18rem_0.25rem] border-[1px] outline-none"
               type="text"
             />
-          </div>
+          </div> */}
         </section>
         <section className="uppercase mb-2 font-medium grid grid-cols-[4fr_1fr_12fr_4fr] bg-[#070e1ada] text-slate-50">
           {tableRows.map((item, i) => (
@@ -749,7 +783,7 @@ const Home = () => {
             </div>
           </section>
         ))}
-        <section className=" text-slate-50 font-light border-[1px] border-[#000000]">
+        <section className=" text-slate-50 font-light border-[1px] border-[#000000] border-b-8">
           <h1 className="bg-slate-900 text-center uppercase font-medium">
             Resultados
           </h1>
@@ -782,6 +816,24 @@ const Home = () => {
                 </div>
               </div>
             ))}
+          </section>
+        </section>
+        <section className=" text-slate-50 font-light border-[1px] border-[#000000]">
+          <h1 className="bg-slate-900 text-center uppercase font-medium">
+            OBSERVACIONES DEL MONITOREO
+          </h1>
+          <section className="grid grid-cols-2 bg-[#164ba8] text-center border-black border-y-[2px]">
+            <div className="w-full flex flex-row gap-3 justify-center items-center border-r-[2px] border-black">
+              <label>¿Que hizo bien?</label>
+              <input
+                className="text-slate-900 px-2 rounded-md h-5 outline-none"
+                type="text"
+              />
+            </div>
+            <div className="w-full flex flex-row gap-3 justify-center items-center py-2">
+              <label htmlFor="">¿Que puede hacer diferente?</label>
+              <textarea className="px-2 text-slate-900 rounded-md w-80 outline-none"></textarea>
+            </div>
           </section>
         </section>
       </main>
