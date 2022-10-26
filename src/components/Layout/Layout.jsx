@@ -6,8 +6,8 @@ const Layout = ({ children }) => {
   return (
     <>
       <Navbar />
-      {/* <ValidateJWT>{children}</ValidateJWT> */}
-      {children}
+      <ValidateJWT>{children}</ValidateJWT>
+      {/* {children} */}
       <Footer />
     </>
   );

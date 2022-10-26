@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const ValidateJWT = ({ children }) => {
   const navigate = useNavigate();
-  const [flag, setflag] = useState(false);
+  const [flag, setFlag] = useState(false);
   function hasJWT() {
     console.log(sessionStorage.getItem("token") ? true : false);
     return sessionStorage.getItem("token") ? true : false;
@@ -27,13 +27,13 @@ const ValidateJWT = ({ children }) => {
       })
       .then((data) => {
         console.log(data);
-        setuserinfo(data?.user);
+        // setUserInfo(data?.user);
       });
   };
   useEffect(() => {
     console.log("entro a jwt");
 
-    hasJWT() ? setflag(true) : navigate("/login");
+    hasJWT() ? setFlag(true) : navigate("/login");
   }, []);
 
   return <>{flag && children}</>;
