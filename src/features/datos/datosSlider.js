@@ -1,19 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  // value: {
-  //   Nombres: "",
-  //   Identificacion: "",
-  //   Cooperativa: "",
-  //   Agente: "",
-  //   Fecha: "",
-  //   TipoDeGestion: "",
-  //   Celular: "",
-  //   Motivo: "",
-  //   SubMotivo: "",
-  //   Observaciones: "",
-  // },
-  value: [],
+  value: {
+    originalData: [],
+    data: [],
+  },
 };
 
 export const datosSlider = createSlice({
@@ -22,7 +13,8 @@ export const datosSlider = createSlice({
   reducers: {
     setValueDataErrors: (state, action) => {
       console.log(action.payload.data);
-      state.value = action.payload.data;
+      state.value.originalData = action.payload.data.originalData;
+      state.value.data = action.payload.data.data;
     },
   },
 });

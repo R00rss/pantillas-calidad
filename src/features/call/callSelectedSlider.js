@@ -1,19 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  // value: {
-  //   Nombres: "",
-  //   Identificacion: "",
-  //   Cooperativa: "",
-  //   Agente: "",
-  //   Fecha: "",
-  //   TipoDeGestion: "",
-  //   Celular: "",
-  //   Motivo: "",
-  //   SubMotivo: "",
-  //   Observaciones: "",
-  // },
-  value: [],
+  value: { data: [], prevStatus: "", currentStatus: "", statusGestion: -1 },
 };
 
 export const navbarSlice = createSlice({
@@ -22,7 +10,11 @@ export const navbarSlice = createSlice({
   reducers: {
     setValueCallSelected: (state, action) => {
       console.log(action.payload.data);
-      state.value = action.payload.data;
+      state.value.data = action.payload.data;
+      state.value.prevStatus = action.payload.prevStatus;
+      state.value.currentStatus = action.payload.currentStatus;
+      state.value.currentStatus = action.payload.currentStatus;
+      state.value.statusGestion = action.payload.statusGestion;
     },
   },
 });

@@ -4,9 +4,14 @@ import capitalizeFirstLetterWords, {
 } from "../../functions/ManageStr";
 import { getSubMotivos, getInicialData } from "../../services/getInfo";
 import { getLlamadas } from "../../services/searchInfo";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setValueCallSelected } from "../../features/call/callSelectedSlider";
 import { changeSelected } from "../../features/selectionButtons/selectionButtonsSlider";
+import simpleAlert, {
+  loadingAlertGeneral,
+  simpleAlertCallback,
+  simpleAlertCallbackNoCancel,
+} from "../../utils/manageAlerts";
 
 const FiltroLlamada = () => {
   const dispatch = useDispatch();
@@ -23,21 +28,116 @@ const FiltroLlamada = () => {
     nombres: "",
   });
   const [resultados, setResultados] = useState([]);
+  const datosUsuario = useSelector((state) => state.userData.value);
 
-  async function handleSearch() {
+  function handleSearch() {
+    const content = {
+      main: {
+        title: "Buscando",
+        message: `Buscando llamadas con los filtros ingresados`,
+        typeOfAlert: "info",
+      },
+      fail: {
+        title: "Error",
+        message: `No se pudo realizar la busqueda`,
+        typeOfAlert: "error",
+      },
+      success: {
+        title: "Información",
+        message: `No se encontraron llamadas con los filtros ingresados`,
+        typeOfAlert: "info",
+      },
+      noContent: {
+        title: "Información",
+        message: `No se encontraron llamadas con los filtros ingresados`,
+        typeOfAlert: "info",
+      },
+    };
     console.log("handleSearch");
     console.log(selected);
-    getLlamadas(selected).then((res) => {
-      console.log(res);
-      if (res && res.data) {
-        setResultados(res.data);
-      }
-    });
+    loadingAlertGeneral(getLlamadas, [selected], setResultados, content);
   }
   function handleSelect(resultado) {
+    const estadoGestion = resultado[resultado.length - 3];
     console.log(resultado);
-    dispatch(setValueCallSelected({ data: resultado }));
-    dispatch(changeSelected({ key: "calidad" }));
+    console.log(estadoGestion);
+    if (estadoGestion !== "Finalizado") {
+      if (estadoGestion === "En proceso") {
+        const contentMain = {
+          title: "Información",
+          message:
+            "Esta gestión ya esta en proceso, ¿Quiere continuar con al gestión?",
+          typeOfAlert: "info",
+        };
+        simpleAlertCallback(contentMain, () => {
+          dispatch(
+            setValueCallSelected({
+              data: resultado,
+              prevStatus: estadoGestion,
+              currentStatus: "En proceso",
+              statusGestion: 1,
+            })
+          ); //guarda la llamada seleccionada
+          dispatch(changeSelected({ key: "calidad" })); //renderiza calidad
+        });
+      }
+      if (estadoGestion === "Sin gestión") {
+        const contentMain = {
+          title: "Información",
+          message: "¿Esta seguro que quiere gestionar esta llamada?",
+          typeOfAlert: "info",
+        };
+        simpleAlertCallback(contentMain, () => {
+          dispatch(
+            setValueCallSelected({
+              data: resultado,
+              prevStatus: estadoGestion,
+              currentStatus: "En proceso",
+              statusGestion: 1,
+            })
+          ); //guarda la llamada seleccionada
+          dispatch(changeSelected({ key: "calidad" })); //renderiza calidad
+        });
+      }
+    } else {
+      if ("rol" in datosUsuario) {
+        if (
+          parseInt(datosUsuario.rol) <= 2 &&
+          parseInt(datosUsuario.rol) >= 0
+        ) {
+          const contentMain = {
+            title: "Información",
+            message:
+              "La gestión ya ha sido finalizada, ¿Desea reaperturar la gestión?",
+            typeOfAlert: "info",
+          };
+          simpleAlertCallback(contentMain, () => {
+            dispatch(
+              setValueCallSelected({
+                data: resultado,
+                prevStatus: estadoGestion,
+                currentStatus: "En proceso",
+                statusGestion: 2,
+              })
+            ); //guarda la llamada seleccionada
+            dispatch(changeSelected({ key: "calidad" })); //renderiza calidad
+            //cuando se renderiza calidad se hace la peticion de los datos iniciales o la creacion de los resultados si es el primer ingreso
+          });
+        } else {
+          simpleAlert("La gestión ya ha sido finalizada", "error", "Error");
+        }
+      } else {
+        const contentMain = {
+          title: "Error",
+          message: "Error al autentificar usuario, vuelva a iniciar sesión",
+          typeOfAlert: "error",
+        };
+        simpleAlertCallbackNoCancel(contentMain, () => {
+          sessionStorage.clear();
+          window.location.href = "/login";
+        });
+      }
+    }
   }
 
   useEffect(() => {
@@ -181,7 +281,7 @@ const FiltroLlamada = () => {
       </section>
       {resultados && resultados.length > 0 && (
         <section className="pb-5">
-          <div className="gap-1 grid grid-cols-[2fr_1fr_2fr_1fr_1fr_1fr_1fr_2fr_2fr_2fr] px-3 py-1 bg-[#164ba8] text-slate-50 mx-2 rounded-t-md">
+          <div className="gap-1 grid grid-cols-[2fr_1fr_2fr_1fr_1fr_1fr_1fr_2fr_2fr_2fr_1fr] px-3 py-1 bg-[#164ba8] text-slate-50 mx-2 rounded-t-md">
             <span className="flex justify-start items-center">Nombres</span>
             <span className="flex justify-start items-center">
               Identificación
@@ -196,17 +296,20 @@ const FiltroLlamada = () => {
             <span className="flex justify-start items-center">Motivo</span>
             <span className="flex justify-start items-center">Submotivo</span>
             <span className="flex justify-start items-center">Observación</span>
+            <span className="flex justify-start items-center">
+              Estado Gestión
+            </span>
           </div>
 
           <section className="max-h-[350px] overflow-y-auto flex flex-col mx-2 ">
             {resultados.map((resultado, i) => (
               <div
                 key={i}
-                className="even:bg-sky-200 odd:bg-white gap-1 grid grid-cols-[2fr_1fr_2fr_1fr_1fr_1fr_1fr_2fr_2fr_2fr] px-3 text-slate-900 rounded-b-sm"
+                className="even:bg-sky-200 odd:bg-white gap-1 grid grid-cols-[2fr_1fr_2fr_1fr_1fr_1fr_1fr_2fr_2fr_2fr_1fr] px-3 text-slate-900 rounded-b-sm"
                 onClick={() => handleSelect(resultado)}
               >
                 {resultado.map((item, j) => {
-                  if (j < resultado.length - 1) {
+                  if (j < resultado.length - 2) {
                     return (
                       <span
                         className="flex justify-start items-center cursor-pointer"

@@ -1,39 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { validateToken } from "../../services/token";
 const ValidateJWT = ({ children }) => {
   const navigate = useNavigate();
   const [flag, setFlag] = useState(false);
-  function hasJWT() {
-    console.log(sessionStorage.getItem("token") ? true : false);
-    return sessionStorage.getItem("token") ? true : false;
-  }
-  const verifyUser = (token_user) => {
-    fetch("api/userinfo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: token_user,
-      }),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          console.log("error");
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        // setUserInfo(data?.user);
-      });
-  };
   useEffect(() => {
-    console.log("entro a jwt");
-
-    hasJWT() ? setFlag(true) : navigate("/login");
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      validateToken(token).then((data) => {
+        if (data && "success" in data && data.success) {
+          setFlag(true);
+          // alert("verificación correcta!");
+        } else {
+          navigate("/login");
+          // alert("verificación incorrecta!");
+        }
+      });
+    } else {
+      navigate("/login");
+      // alert("no existe token en el sesión storage");
+    }
   }, []);
 
   return <>{flag && children}</>;

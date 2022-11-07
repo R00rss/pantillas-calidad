@@ -2,18 +2,26 @@ import React, { useEffect, useState } from "react";
 import iconKMB2 from "../../assets/icons/kmbWhite.png";
 import { useSelector, useDispatch } from "react-redux";
 import { toFixedIfNecessary } from "../../utils/manageNumbers";
-import { getPlantillasByIdTrx } from "../../services/plantillas";
+import {
+  changeStatusPlantilla,
+  getPlantillasByIdTrx,
+} from "../../services/plantillas";
 import { setValueDataErrors } from "../../features/datos/datosSlider";
 import { getMeta } from "../../services/getInfo";
 import { useRef } from "react";
+import simpleAlert from "../../utils/manageAlerts";
 
 const Calidad = () => {
   const dispatch = useDispatch();
   const textAreaBien = useRef(null);
   const textAreaDiferente = useRef(null);
   const selectedCall = useSelector((state) => state.call.value);
+  const dataUser = useSelector((state) => state.userData.value);
+  console.log(dataUser);
+  console.log(selectedCall);
   const dataToSend = useSelector((state) => state.dataPlantilla.value);
   const [items, setItems] = useState([]);
+  const [originalItems, setOriginalItems] = useState([]);
   const [resultados, setResultados] = useState({
     meta: 0,
     notaTotal: 0,
@@ -140,22 +148,90 @@ const Calidad = () => {
     return "white";
   }
   useEffect(() => {
-    const IDTrx = selectedCall[10];
-    getMeta(IDTrx).then((data) =>
-      setResultados({ ...resultados, meta: toFixedIfNecessary(data.meta, 2) })
-    );
-    getPlantillasByIdTrx(IDTrx).then((data) => {
-      if (data && "result" in data) {
-        setItems(data.result);
+    const IDTrx = selectedCall.data[selectedCall.data.length - 1];
+    const IDPlantilla = selectedCall.data[selectedCall.data.length - 2];
+    if (IDTrx) {
+      getMeta(IDTrx).then((data) =>
+        setResultados({ ...resultados, meta: toFixedIfNecessary(data.meta, 2) })
+      );
+      getPlantillasByIdTrx(IDTrx, dataUser.id).then((data) => {
+        if (data && "result" in data) {
+          setItems(data.result);
+          setOriginalItems(data.result);
+        }
+      });
+      if (selectedCall.statusGestion === 1) {
+        //iniciando gestion
+        if (selectedCall.prevStatus === selectedCall.currentStatus) {
+          simpleAlert("Continuando con la gestión", "info", "info");
+        } else {
+          simpleAlert("Iniciando la gestión", "info", "info");
+        }
       }
-    });
+      if (selectedCall.statusGestion === 0) {
+        //error, sin gestion
+        simpleAlert(
+          "ocurrió un error, el estado de la gestion es sin gestionar, volviendo al login",
+          "error",
+          "Error"
+        );
+        window.location.href = "/login";
+      }
+      if (selectedCall.statusGestion === 2) {
+        //reapertura
+        if (IDPlantilla) {
+          changeStatusPlantilla(IDPlantilla, "En proceso").then((data) => {
+            console.log(data);
+            if (data && "success" in data && data.success) {
+              simpleAlert(
+                "Se reaperturó la gestión de la llamada",
+                "info",
+                "Info"
+              );
+            } else {
+              simpleAlert(
+                "No se pudo reaperturar la gestión de la llamada",
+                "error",
+                "Error"
+              );
+              window.location.href = "/login";
+            }
+          });
+        } else {
+          simpleAlert(
+            "No se pudo reaperturar la gestión de la llamada",
+            "error",
+            "Error"
+          );
+          window.location.href = "/login";
+        }
+      }
+      if (selectedCall.statusGestion === -1) {
+        simpleAlert("Error inesperado, volviendo al login", "error", "Error");
+        window.location.href = "/login";
+      }
+    } else {
+      simpleAlert("Error inesperado, volviendo al login", "error", "Error");
+      window.location.href = "/login";
+    }
   }, []);
   useEffect(() => {
     const resultados = Object.keys(items).map(
       (keyItem) => items[keyItem].items
     );
+    const resultadosOriginales = Object.keys(originalItems).map(
+      (keyItem) => originalItems[keyItem].items
+    );
     console.log(resultados.flat());
-    dispatch(setValueDataErrors({ data: resultados.flat() }));
+    console.log(resultadosOriginales.flat());
+    dispatch(
+      setValueDataErrors({
+        data: {
+          data: resultados.flat(),
+          originalData: resultadosOriginales.flat(),
+        },
+      })
+    );
   }, [items]);
 
   useEffect(() => console.log(items), [items]);
@@ -165,7 +241,7 @@ const Calidad = () => {
     <section className="px-10 py-1 shadow-[10px_10px_25px_-10px_rgba(0,0,0,0.9)] bg-[#000000]">
       <section className=" text-slate-50 flex flex-row justify-center bg-gradient-to-r from-blue-700 via-blue-900 to-gray-700 gap-5 ">
         <div className="flex justify-center items-center">
-          <img className="max-h-36" src={iconKMB2} alt="kmb icon" />
+          <img className="max-h-24" src={iconKMB2} alt="kmb icon" />
         </div>
         <div className="flex flex-row justify-center items-center">
           <ul className="w-[200px] text-center flex flex-col justify-center items-center p-1 gap-1 text-emerald-400">
@@ -192,12 +268,12 @@ const Calidad = () => {
               SubMotivo
             </li>
           </ul>
-          <ul className="w-[200px] text-center flex flex-col justify-center items-center p-1 gap-1 capitalize">
+          <ul className="text-center flex flex-col justify-center items-center p-1 gap-1 capitalize">
             <li className="w-full p-[0.18rem_0.25rem] border-[1px] border-transparent">
-              {sessionStorage.getItem("username")}
+              {dataUser?.username}
             </li>
-            {selectedCall.map((item, i) => {
-              if (i < selectedCall.length - 2) {
+            {selectedCall?.data.map((item, i) => {
+              if (i < selectedCall?.data.length - 3) {
                 return (
                   <li
                     key={i}
@@ -268,8 +344,10 @@ const Calidad = () => {
                           setItems(temp);
                         }}
                         className={`${
-                          item.notaActual === item.notaMaxima
-                            ? "bg-[#0c3274]"
+                          item.aplica === 1
+                            ? item.notaActual === item.notaMaxima
+                              ? "bg-[#0c3274]"
+                              : "bg-[#164ba8]"
                             : "bg-[#164ba8]"
                         }  text-slate-50 rounded-sm`}
                       >
@@ -282,8 +360,10 @@ const Calidad = () => {
                           setItems(temp);
                         }}
                         className={`${
-                          item.notaActual !== item.notaMaxima
-                            ? "bg-[#0c3274]"
+                          item.aplica === 1
+                            ? item.notaActual !== item.notaMaxima
+                              ? "bg-[#0c3274]"
+                              : "bg-[#164ba8]"
                             : "bg-[#164ba8]"
                         }  text-slate-50 rounded-sm`}
                       >

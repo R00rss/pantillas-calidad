@@ -1,13 +1,12 @@
-//se usa en el navbar
-export function saveResultados(resultados) {
-  return fetch("/api/resultados", {
+//se usa en el login
+export function validateToken(tokenStr) {
+  return fetch("/api/validateToken", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      data: resultados.data,
-      originalData: resultados.originalData,
+      token: tokenStr,
     }),
   }).then((res) => {
     if (res.status === 200) return res.json();
