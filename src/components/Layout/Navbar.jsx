@@ -109,7 +109,7 @@ const Navbar = () => {
     navigate(`/${target}`);
   }
   return (
-    <div className="sticky top-0  bg-[#0a3853da]  text-slate-100 font-medium w-full py-2">
+    <div className="sticky top-0 z-10 gradientGreen text-slate-100 font-medium w-full py-1 border-b-[1px] border-b-[#00000049]">
       {datosUsuario && (
         <ul className="flex flex-row justify-between items-center text-center w-full gap-5 text-base">
           <li className="cursor-pointer px-5 rounded-md flex justify-start items-center flex-row gap-5">
@@ -139,7 +139,7 @@ const Navbar = () => {
               >
                 <button>Revisar Calidad</button>
               </li>
-              <li className="cursor-pointer rounded-md border-[1px] p-[0.2rem_0.5rem] hover:text-[#ffffff99]">
+              {/* <li className="cursor-pointer rounded-md border-[1px] p-[0.2rem_0.5rem] hover:text-[#ffffff99]">
                 <button onClick={() => handleSave(dataToSend)}>
                   Guardar Plantilla
                 </button>
@@ -148,7 +148,7 @@ const Navbar = () => {
                 <button onClick={() => handleFinish(dataToSend)}>
                   Finalizar Plantilla
                 </button>
-              </li>
+              </li> */}
             </>
           )}
           <li className="cursor-pointer  px-5 rounded-md  flex flex-row justify-end items-center gap-4">

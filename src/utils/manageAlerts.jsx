@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { useDispatch } from "react-redux";
 const MySwal = withReactContent(Swal);
 const simpleAlert = (message, typeOfAlert, title) => {
   MySwal.fire({
@@ -99,7 +100,8 @@ export const confirmAlertSaveResults = (
   contentOnSuccess,
   contentOnFail,
   callback,
-  paramsCallback
+  paramsCallback,
+  func = () => {}
 ) => {
   MySwal.fire({
     title: contentMain.title,
@@ -131,6 +133,7 @@ export const confirmAlertSaveResults = (
               }
             }
             if (flagAplica || flagNota) {
+              func();
               MySwal.fire({
                 title: contentOnSuccess.title,
                 text: contentOnSuccess.message,
@@ -231,6 +234,29 @@ export const loadingAlert = (
     }
   });
 };
+export const generalAlertConfirmResponse = (contentMain, setter) => {
+  MySwal.fire({
+    title: contentMain.title,
+    text: contentMain.message,
+    icon: contentMain.typeOfAlert,
+    showCancelButton: true,
+    showConfirmButton: true,
+    cancelButtonColor: "#d33",
+    cancelButtonText: contentMain.buttonCancel,
+    allowOutsideClick: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("confirmado");
+      setter(true);
+    } else {
+      setter(false);
+    }
+    // if (result.isDenied) {
+    //   console.log("cancelado");
+    //   setter(false);
+    // }
+  });
+};
 export function loadingAlertGeneral(func, params, setter, content) {
   let flag = false;
   MySwal.fire({
@@ -244,6 +270,8 @@ export function loadingAlertGeneral(func, params, setter, content) {
   func(...params)
     .then((res) => {
       if (res && res.data) {
+        console.log(res.data);
+
         setter(res.data);
         if (res.data.length == 0) {
           MySwal.fire({

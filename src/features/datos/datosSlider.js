@@ -16,10 +16,13 @@ export const datosSlider = createSlice({
       state.value.originalData = action.payload.data.originalData;
       state.value.data = action.payload.data.data;
     },
+    updateCurrentData: (state) => {
+      state.value.originalData = state.value.data;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setValueDataErrors } = datosSlider.actions;
+export const { setValueDataErrors, updateCurrentData } = datosSlider.actions;
 
 export default datosSlider.reducer;

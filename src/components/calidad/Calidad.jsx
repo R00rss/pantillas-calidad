@@ -10,6 +10,7 @@ import { setValueDataErrors } from "../../features/datos/datosSlider";
 import { getMeta } from "../../services/getInfo";
 import { useRef } from "react";
 import simpleAlert from "../../utils/manageAlerts";
+import SidebarCalidad from "../sidebarCalidad/SidebarCalidad";
 
 const Calidad = () => {
   const dispatch = useDispatch();
@@ -238,42 +239,34 @@ const Calidad = () => {
   useEffect(() => console.log(resultados), [resultados]);
 
   return (
-    <section className="px-10 py-1 shadow-[10px_10px_25px_-10px_rgba(0,0,0,0.9)] bg-[#000000]">
-      <section className=" text-slate-50 flex flex-row justify-center bg-gradient-to-r from-blue-700 via-blue-900 to-gray-700 gap-5 ">
+    <section className=" px-10 py-1 shadow-[10px_10px_25px_-10px_rgba(0,0,0,0.9)] bgWaves">
+      <SidebarCalidad />
+      <section className=" text-slate-50 flex flex-row justify-center gap-5 ">
         <div className="flex justify-center items-center">
           <img className="max-h-24" src={iconKMB2} alt="kmb icon" />
         </div>
         <div className="flex flex-row justify-center items-center">
-          <ul className="w-[200px] text-center flex flex-col justify-center items-center p-1 gap-1 text-emerald-400">
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
-              Evaluador
-            </li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
-              Nombre Cliente
-            </li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
-              Identificación
-            </li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
-              Cooperativa
-            </li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">Agente</li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">Fecha</li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
-              Tipo de gestión
-            </li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">Celular</li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">Motivo</li>
-            <li className="w-full p-[0.18rem_0.25rem] border-[1px]">
-              SubMotivo
-            </li>
+          <ul
+            className="w-[180px] text-center flex flex-col justify-center items-center p-1 gap-1 text-slate-600/90
+          "
+          >
+            <li className="w-full p-[0.18rem_0.25rem]">Evaluador</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Nombre Cliente</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Identificación</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Cooperativa</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Agente</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Fecha</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Tipo de gestión</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Celular</li>
+            <li className="w-full p-[0.18rem_0.25rem]">Motivo</li>
+            <li className="w-full p-[0.18rem_0.25rem]">SubMotivo</li>
           </ul>
-          <ul className="text-center flex flex-col justify-center items-center p-1 gap-1 capitalize">
+          <ul className="text-center flex flex-col justify-center items-center p-1 gap-1 capitalize text-slate-900">
             <li className="w-full p-[0.18rem_0.25rem] border-[1px] border-transparent">
               {dataUser?.username}
             </li>
             {selectedCall?.data.map((item, i) => {
-              if (i < selectedCall?.data.length - 3) {
+              if (i < selectedCall?.data.length - 4) {
                 return (
                   <li
                     key={i}
@@ -287,7 +280,7 @@ const Calidad = () => {
           </ul>
         </div>
       </section>
-      <section className="uppercase mb-2 font-medium grid grid-cols-[4fr_1fr_12fr_4fr] bg-[#070e1ada] text-slate-50">
+      <section className="uppercase mb-2 font-medium grid grid-cols-[4fr_1fr_12fr_4fr] bg-[#070e1a] text-slate-50">
         {tableRows.map((item, i) => (
           <div className="flex flex-col justify-center items-center" key={i}>
             {item}
@@ -506,7 +499,6 @@ const Calidad = () => {
           </div>
         </section>
       </section>
-      <button onClick={() => generalResultados()}>get results</button>
     </section>
   );
 };

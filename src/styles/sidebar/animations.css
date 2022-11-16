@@ -1,0 +1,15 @@
+.left-bar-sidebar::before {
+  position: absolute;
+  content: "";
+  inset: 0;
+  right: auto;
+  background: rgba(9, 74, 158, 0.959);
+  border-radius: 0 2px 2px 0;
+  width: 6px;
+}
+.animated-sidebar-bar {
+  background: rgba(158, 9, 158, 0.959);
+  width: 50px;
+  height: 10px;
+  transform: width 0.5s ease-in-out;
+}

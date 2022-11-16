@@ -14,11 +14,6 @@ const Login = () => {
   const buttonLogin = useRef(null);
   useEffect(() => {
     sessionStorage.clear();
-    // if (sessionStorage.getItem("username")) {
-    //   username.current.value = sessionStorage.getItem("username");
-    //   password.current.value = sessionStorage.getItem("password");
-    //   setCheckRemember(true);
-    // }
   }, []);
 
   function handleLogin(e) {
@@ -71,8 +66,8 @@ const Login = () => {
     }
   }
   return (
-    <section className="bg-black min-h-screen flex justify-center items-center">
-      <section className="login-container-animation w-[350px] h-[450px] flex flex-col justify-center items-center bg-gradient-to-tr from-[rgb(42,46,54)] to-[rgb(97,107,125)] rounded-md">
+    <section className="min-h-screen flex justify-center items-center bgWaves">
+      <section className="bg-[#3d635e80] login-container-animation w-[350px] h-[450px] flex flex-col justify-center items-center  rounded-md">
         <div className="ball-login-border"></div>
         <img className="w-[100px] imageKMB" src={kmbIconWhite} alt="kmb icon" />
         <form
@@ -82,7 +77,7 @@ const Login = () => {
           <div className="pb-2 mb-10 border-b-[1px] border-[#aaaaaa44]">
             <input
               ref={username}
-              className="w-full bg-transparent outline-none placeholder-[#838383] autofill:bg-transparent"
+              className="w-full bg-transparent outline-none placeholder-[rgba(255,255,255,0.61)] autofill:bg-transparent"
               placeholder="Email or Username"
               type="text"
               required
@@ -91,7 +86,7 @@ const Login = () => {
           <div className="pb-2 mb-10 border-b-[1px] border-[#aaaaaa44]">
             <input
               ref={password}
-              className="w-full bg-transparent outline-none placeholder-[#838383] autofill:bg-transparent"
+              className="w-full bg-transparent outline-none placeholder-[rgba(255,255,255,0.61)] autofill:bg-transparent"
               placeholder="Password"
               type="password"
               required
